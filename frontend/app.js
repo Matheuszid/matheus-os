@@ -131,7 +131,7 @@ async function action(event) {
   if (event.target.id === 'sheet') { closeSheet(); return; }
   const button = event.target.closest('[data-action]'); if (!button) return;
   const name = button.dataset.action; const value = button.dataset.value;
-  if (name === 'tab') { view = value; projectId = null; area = null; render(); return; }
+  if (name === 'tab') { view = button.dataset.view || value; projectId = null; area = null; render(); return; }
   if (name === 'capture') { captureSheet(); return; }
   if (name === 'close-sheet') { closeSheet(); return; }
   if (name === 'open') { await openProject(value); return; }
