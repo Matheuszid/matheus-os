@@ -55,6 +55,7 @@ var answerCache = {};
 var answerTimers = {};
 var unsubscribers = [];
 var legacyStore = loadLocalStore();
+var currentView = 'home';
 
 const state = {
   projects: [],
@@ -100,6 +101,19 @@ function showAuthGate(visible) {
 function showMigrationGate(visible) {
   var gate = document.getElementById('migrationGate');
   if (gate) gate.classList.toggle('hidden', !visible);
+}
+
+function setView(view, shouldScroll) {
+  currentView = view;
+  var shell = document.querySelector('.app-content');
+  if (shell) shell.dataset.view = view;
+  document.querySelectorAll('[data-view]').forEach(function (link) {
+    link.classList.toggle('active', link.dataset.view === view);
+  });
+  if (shouldScroll !== false) {
+    var target = document.getElementById(view === 'home' ? 'home' : view === 'map' ? 'map' : view === 'captures' ? 'cap' : view === 'projects' ? 'next' : 'mural');
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 function projectById(id) {
@@ -251,6 +265,7 @@ function renderAll() {
 
 function pick(id) {
   sel = id;
+  setView('map', false);
   renderAll();
   if (window.innerWidth <= 820) document.getElementById('panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   if (by[id]?.k === 'p' && currentUser) loadProjectAnswers(id);
@@ -438,6 +453,18 @@ document.getElementById('map').addEventListener('click', function (event) {
   if (node) pick(node.dataset.id);
 });
 
+document.querySelectorAll('[data-view]').forEach(function (link) {
+  link.addEventListener('click', function () {
+    setView(link.dataset.view, true);
+    if (link.dataset.view === 'captures') {
+      setTimeout(function () {
+        var input = document.getElementById('ci');
+        if (input) input.focus();
+      }, 220);
+    }
+  });
+});
+
 document.getElementById('map').addEventListener('keydown', function (event) {
   if (event.key !== 'Enter' && event.key !== ' ') return;
   var node = event.target.closest('.n');
@@ -547,3 +574,4 @@ panel();
 mural();
 steps();
 inbox();
+setView('home', false);

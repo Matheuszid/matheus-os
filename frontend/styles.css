@@ -208,6 +208,35 @@ textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(216, 16
 
 .bottom-nav { display: none; }
 
+@media (max-width: 680px) {
+  .app-content[data-view="home"] #cap,
+  .app-content[data-view="home"] main,
+  .app-content[data-view="home"] #next,
+  .app-content[data-view="home"] #mural,
+  .app-content[data-view="map"] #home,
+  .app-content[data-view="map"] #cap,
+  .app-content[data-view="map"] #next,
+  .app-content[data-view="map"] #mural,
+  .app-content[data-view="captures"] #home,
+  .app-content[data-view="captures"] main,
+  .app-content[data-view="captures"] #next,
+  .app-content[data-view="captures"] #mural,
+  .app-content[data-view="projects"] #home,
+  .app-content[data-view="projects"] #cap,
+  .app-content[data-view="projects"] main,
+  .app-content[data-view="projects"] #mural,
+  .app-content[data-view="self"] #home,
+  .app-content[data-view="self"] #cap,
+  .app-content[data-view="self"] main,
+  .app-content[data-view="self"] #next { display: none; }
+
+  .app-content[data-view="home"] header,
+  .app-content[data-view="map"] header,
+  .app-content[data-view="captures"] header,
+  .app-content[data-view="projects"] header,
+  .app-content[data-view="self"] header { padding-bottom: 12px; }
+}
+
 @media (max-width: 980px) {
   .sidebar { width: 196px; }
   header, #cap, #next, #mural, main { padding-left: 24px; padding-right: 24px; }
@@ -239,4 +268,6 @@ textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(216, 16
   .bottom-nav a span { height: 19px; color: var(--text-3); }
   .bottom-nav a.active { color: var(--text); background: var(--surface-2); }
   .bottom-nav a.active span { color: var(--accent); }
+  .bottom-nav a.capture-tab { color: var(--text); margin-top: -18px; padding: 5px 8px 4px; }
+  .bottom-nav a.capture-tab span { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; color: #211b0c; background: var(--accent); box-shadow: 0 6px 18px rgba(0, 0, 0, .3); font-size: 22px; }
 }
