@@ -7,11 +7,30 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <header>
-      <h1>Matheus OS</h1>
-      <p>Esboço do mapa-mãe com dados de exemplo. Toque em uma área ou projeto para abrir o motor de perguntas.</p>
-      <div id="authUser" class="auth-user"></div>
-    </header>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegação principal">
+        <a class="brand" href="#map"><span class="brand-mark">M</span><span><b>Matheus OS</b><small>sistema pessoal</small></span></a>
+        <nav>
+          <a class="active" href="#home"><span>⌂</span>Home</a>
+          <a href="#map"><span>◈</span>Mapa</a>
+          <a href="#cap"><span>＋</span>Capturas</a>
+          <a href="#next"><span>→</span>Próximos passos</a>
+          <a href="#mural"><span>✦</span>Mural</a>
+        </nav>
+        <div class="sidebar-note"><span class="status-dot"></span><span>Seu espaço de clareza</span></div>
+      </aside>
+
+      <div class="app-content">
+        <header>
+          <div class="header-copy">
+            <span class="eyebrow">MAPA-MÃE · VISÃO GERAL</span>
+            <h1>Um lugar para pensar melhor.</h1>
+            <p>Externalize o que importa, encontre o próximo passo e mantenha o contexto por perto.</p>
+          </div>
+          <div id="authUser" class="auth-user"></div>
+        </header>
+
+        <section id="home" class="home-view" aria-label="Painel de clareza"></section>
 
     <div id="authGate" class="auth-gate">
       <div class="auth-card">
@@ -45,6 +64,15 @@
 
     <section id="next" aria-label="Próximos passos"></section>
     <section id="mural" aria-label="Mural de conquistas"></section>
+
+    <nav class="bottom-nav" aria-label="Navegação móvel">
+      <a class="active" href="#home"><span>⌂</span>Home</a>
+      <a href="#map"><span>◈</span>Mapa</a>
+      <a href="#cap"><span>＋</span>Capturas</a>
+      <a href="#next"><span>→</span>Passos</a>
+      <a href="#mural"><span>✦</span>Mural</a>
+    </nav>
+    </div>
 
     <script type="module" src="./app.js"></script>
   </body>

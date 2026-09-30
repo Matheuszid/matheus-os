@@ -243,6 +243,7 @@ function renderAll() {
   if (!by[sel] || !alive(sel)) sel = 'Pessoal';
   draw();
   panel();
+  home();
   mural();
   steps();
   inbox();
@@ -363,6 +364,33 @@ async function handleAuthState(user) {
 
 function today() {
   return new Date().toLocaleDateString('pt-BR');
+}
+
+function home() {
+  var activeProjects = state.projects.filter(function (project) { return project.status !== 'completed'; });
+  var activeSteps = activeProjects.filter(function (project) { return project.nextAction; }).slice(0, 3);
+  var recentCaptures = state.captures.filter(function (capture) { return capture.status === 'inbox'; }).slice(0, 3);
+  var recentAchievements = state.achievements.slice(0, 2);
+  var html = '<div class="home-heading"><div><span class="eyebrow">PAINEL DE CLAREZA</span><h2>O que merece sua atenção agora?</h2><p>Um resumo leve do que está vivo no seu sistema.</p></div><a class="home-action" href="#cap">＋ Capturar pensamento</a></div>';
+  html += '<div class="home-grid">';
+  html += '<article class="focus-card"><span class="card-kicker">FOCO ATUAL</span><strong>' + esc(activeSteps[0]?.nextAction || 'Nada precisa ser resolvido agora.') + '</strong><span>' + esc(activeSteps[0] ? activeSteps[0].name + ' · ' + stageName(activeSteps[0].stage) : 'Você pode começar por uma captura.') + '</span></article>';
+  html += '<article class="summary-card"><span class="card-kicker">PROJETOS ATIVOS</span><strong>' + activeProjects.length + '</strong><span>contextos em movimento</span></article>';
+  html += '<article class="summary-card"><span class="card-kicker">CAPTURAS PENDENTES</span><strong>' + recentCaptures.length + '</strong><span>ideias aguardando espaço</span></article>';
+  html += '</div>';
+  html += '<div class="home-columns"><article class="home-list"><div class="section-head"><div><span class="card-kicker">PRÓXIMOS PASSOS</span><h3>Pequenos movimentos</h3></div><a href="#next">Ver todos</a></div>';
+  if (!activeSteps.length) html += '<p class="empty-copy">Nenhum próximo passo registrado ainda.</p>';
+  activeSteps.forEach(function (project) { html += '<a class="home-step" href="#panel" data-home-project="' + esc(project.name) + '"><i style="background:var(--s' + Number(project.stage || 0) + ')"></i><span><b>' + esc(project.name) + '</b><small>' + esc(project.nextAction) + '</small></span><em>' + esc(stageName(project.stage)) + '</em></a>'; });
+  html += '</article><article class="home-list"><div class="section-head"><div><span class="card-kicker">MEMÓRIA RECENTE</span><h3>O que está chegando</h3></div><a href="#cap">Inbox</a></div>';
+  if (!recentCaptures.length && !recentAchievements.length) html += '<p class="empty-copy">Sua cabeça está limpa por aqui.</p>';
+  recentCaptures.forEach(function (capture) { html += '<div class="home-capture"><span class="capture-mark">＋</span><span>' + esc(capture.text) + '</span></div>'; });
+  recentAchievements.forEach(function (achievement) { html += '<div class="home-capture"><span class="capture-mark achievement-mark">✦</span><span>' + esc(achievement.title) + '</span></div>'; });
+  html += '</article></div>';
+  document.getElementById('home').innerHTML = html;
+  document.querySelectorAll('[data-home-project]').forEach(function (link) { link.addEventListener('click', function () { pick(link.dataset.homeProject); }); });
+}
+
+function stageName(value) {
+  return ST[Number(value)] || 'Capturar';
 }
 
 function mural() {
