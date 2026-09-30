@@ -1,79 +1,51 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Matheus OS – protótipo do mapa</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <div class="app-shell">
-      <aside class="sidebar" aria-label="Navegação principal">
-        <a class="brand" href="#map"><span class="brand-mark">M</span><span><b>Matheus OS</b><small>sistema pessoal</small></span></a>
-        <nav>
-          <a class="active" href="#home" data-view="home"><span>⌂</span>Hoje</a>
-          <a href="#map" data-view="map"><span>◈</span>Mapa</a>
-          <a href="#cap" data-view="captures"><span>＋</span>Capturas</a>
-          <a href="#next" data-view="projects"><span>→</span>Projetos</a>
-          <a href="#mural" data-view="self"><span>✦</span>Eu</a>
-        </nav>
-        <div class="sidebar-note"><span class="status-dot"></span><span>Seu espaço de clareza</span></div>
-      </aside>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Matheus OS</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main id="v" aria-live="polite"></main>
 
-      <div class="app-content">
-        <header>
-          <div class="header-copy">
-            <span class="eyebrow">MAPA-MÃE · VISÃO GERAL</span>
-            <h1>Um lugar para pensar melhor.</h1>
-            <p>Externalize o que importa, encontre o próximo passo e mantenha o contexto por perto.</p>
-          </div>
-          <div id="authUser" class="auth-user"></div>
-        </header>
+  <nav class="tab-bar" aria-label="Navegação principal">
+    <button data-action="tab" data-view="today">Hoje</button>
+    <button data-action="tab" data-view="map">Mapa</button>
+    <button class="capture-button" data-action="capture" aria-label="Capturar">+</button>
+    <button data-action="tab" data-view="projects">Projetos</button>
+    <button data-action="tab" data-view="me">Eu</button>
+  </nav>
 
-        <section id="home" class="home-view" aria-label="Painel de clareza"></section>
+  <div id="sheet" aria-hidden="true"><div id="sheetContent"></div></div>
+  <div id="toast" role="status"></div>
 
-    <div id="authGate" class="auth-gate">
-      <div class="auth-card">
-        <h2>Matheus OS</h2>
-        <p>Entre para sincronizar seus dados entre dispositivos.</p>
-        <button id="googleLoginBtn">Entrar com Google</button>
-      </div>
+  <div id="authGate" class="auth-gate">
+    <div class="auth-card">
+      <h2>Matheus OS</h2>
+      <p>Entre para sincronizar seu espaço de pensamento.</p>
+      <button id="googleLoginBtn" type="button">Entrar com Google</button>
     </div>
+  </div>
 
-    <div id="migrationGate" class="auth-gate hidden">
-      <div class="auth-card">
-        <h2>Dados antigos encontrados</h2>
-        <p>Encontramos dados antigos deste navegador.</p>
-        <button id="migrationImportBtn" type="button">Importar para minha conta</button>
-        <button id="migrationIgnoreBtn" class="secondary" type="button">Ignorar</button>
-      </div>
+  <div id="migrationGate" class="auth-gate hidden">
+    <div class="auth-card">
+      <h2>Dados antigos encontrados</h2>
+      <p>Encontramos dados antigos deste navegador.</p>
+      <button id="migrationImportBtn" type="button">Importar para minha conta</button>
+      <button id="migrationIgnoreBtn" class="secondary" type="button">Ignorar</button>
     </div>
+  </div>
 
-    <div id="cap">
-      <div class="capbar">
-        <input id="ci" placeholder="O que está na sua cabeça agora? Jogue aqui." maxlength="80" aria-label="Captura rápida" />
-        <button id="cb">Capturar</button>
-      </div>
-      <ul id="inbox"></ul>
+  <div id="migrationGate" class="auth-gate hidden">
+    <div class="auth-card">
+      <h2>Dados antigos encontrados</h2>
+      <p>Encontramos dados antigos deste navegador.</p>
+      <button id="migrationImportBtn" type="button">Importar para minha conta</button>
+      <button id="migrationIgnoreBtn" class="secondary" type="button">Ignorar</button>
     </div>
+  </div>
 
-    <main>
-      <section id="map" aria-label="Mapa-mãe"></section>
-      <section id="panel" aria-live="polite"></section>
-    </main>
-
-    <section id="next" aria-label="Próximos passos"></section>
-    <section id="mural" aria-label="Mural de conquistas"></section>
-
-    <nav class="bottom-nav" aria-label="Navegação móvel">
-      <a class="active" href="#home" data-view="home"><span>⌂</span>Hoje</a>
-      <a href="#map" data-view="map"><span>◈</span>Mapa</a>
-      <a class="capture-tab" href="#cap" data-view="captures"><span>＋</span>Capturar</a>
-      <a href="#next" data-view="projects"><span>→</span>Projetos</a>
-      <a href="#mural" data-view="self"><span>✦</span>Eu</a>
-    </nav>
-    </div>
-
-    <script type="module" src="./app.js"></script>
-  </body>
+  <script type="module" src="./app.js"></script>
+</body>
 </html>
