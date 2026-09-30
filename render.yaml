@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: matheus-os-mcp
+    runtime: docker
+    rootDir: mcp
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: FIREBASE_PROJECT_ID
+        value: matheus-os-fdd16
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+      - key: MATHEUS_OS_UID
+        sync: false
+      - key: MCP_API_KEY
+        sync: false
+      - key: PORT
+        value: 8787
