@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Matheus OS – protótipo do mapa</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#eef1f4;--panel:#fff;--ink:#1b2430;--mut:#6b7787;--line:#b9c2cd;--soft:#e2e7ec;
+--s0:#7d8798;--s1:#3f7de8;--s2:#8a63e6;--s3:#e0972b;--s4:#22a56f;--s5:#dc5487}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12171d;--panel:#1a212a;--ink:#e6ebf1;--mut:#8b97a6;--line:#3a4552;--soft:#242d38}}
+:root[data-theme="dark"]{--bg:#12171d;--panel:#1a212a;--ink:#e6ebf1;--mut:#8b97a6;--line:#3a4552;--soft:#242d38}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Avenir Next","Segoe UI",system-ui,sans-serif}
+header{padding:14px 18px 4px}
+h1{font-size:20px;margin:0;font-weight:650;letter-spacing:-.01em}
+header p{margin:2px 0 0;color:var(--mut);font-size:13px;max-width:60ch}
+main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:14px;padding:10px 18px 24px}
+@media (max-width:820px){main{grid-template-columns:1fr}}
+#map{background:var(--panel);border-radius:14px;padding:6px}
+svg{width:100%;height:auto;display:block}
+.lk{stroke:var(--line);stroke-width:1.4;fill:none}
+.lk.x{stroke-dasharray:5 5}
+.lk.hot{stroke:var(--ink);stroke-width:2}
+.n{cursor:pointer}
+.n text{fill:var(--ink);font-size:12.5px;text-anchor:middle;pointer-events:none}
+.n.a circle{fill:var(--soft);stroke:var(--line);stroke-width:1.5}
+.n.a.empty{opacity:.55}
+.n.a text{font-size:13px;font-weight:600}
+.n.p circle.b{stroke:var(--panel);stroke-width:3}
+.n.sel circle.r{fill:none;stroke:var(--ink);stroke-width:2}
+.n:focus{outline:none}.n:focus-visible circle.r{fill:none;stroke:var(--s1);stroke-width:3}
+.core circle{fill:var(--ink)}.core text{fill:var(--bg);font-weight:650;font-size:13px}
+#panel{background:var(--panel);border-radius:14px;padding:16px;align-self:start}
+#panel h2{margin:0 0 2px;font-size:18px}
+.sub{color:var(--mut);font-size:13px;margin:0 0 12px}
+.rib{display:flex;gap:4px;margin:0 0 14px}
+.rib button{flex:1;border:0;border-radius:8px;padding:7px 2px;font:inherit;font-size:11.5px;background:var(--soft);color:var(--mut);cursor:pointer;line-height:1.15}
+.rib button.on{color:#fff;font-weight:600}
+.seg{display:inline-flex;background:var(--soft);border-radius:9px;padding:3px;margin:0 0 14px}
+.seg button{border:0;background:none;font:inherit;font-size:13px;padding:5px 12px;border-radius:7px;color:var(--mut);cursor:pointer}
+.seg button.on{background:var(--panel);color:var(--ink);font-weight:600}
+.grp{margin:0 0 12px}
+.grp h3{margin:0 0 6px;font-size:13px;font-weight:650;display:flex;align-items:center;gap:7px}
+.grp h3 i{width:9px;height:9px;border-radius:50%;display:inline-block}
+label{display:block;font-size:13.5px;margin:0 0 8px}
+label span{display:block;margin-bottom:3px}
+textarea{width:100%;min-height:42px;resize:vertical;font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 9px}
+textarea:focus{outline:2px solid var(--s1);outline-offset:1px}
+.hint{color:var(--mut);font-size:12.5px;margin:14px 0 0}
+
+:root{--gold:#e0b03a}
+.loop{height:13px;border:1.5px solid var(--mut);border-top:0;border-radius:0 0 10px 10px;margin:-10px 8% 2px;position:relative}
+.loop:before{content:"";position:absolute;left:-6.5px;top:-6px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:7px solid var(--mut)}
+.lc{margin:0 0 14px;text-align:center;color:var(--mut);font-size:12px}
+.close{background:var(--bg);border-radius:10px;padding:10px 12px;margin:0 0 14px}
+.close b{display:block;margin-bottom:6px;font-size:13px}
+.close button{display:block;width:100%;text-align:left;font:inherit;font-size:13px;padding:7px 10px;margin:0 0 6px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.close button.k{background:var(--gold);border-color:var(--gold);color:#3a2a00;font-weight:600}
+#mural{padding:0 18px 28px}
+#mural h2{margin:0;font-size:18px}
+.wall{display:flex;flex-wrap:wrap;gap:16px;margin:14px 0}
+.bd{width:112px;text-align:center;font-size:12.5px;line-height:1.3}
+.bd b{display:block}
+.bd span{display:block;color:var(--mut);font-size:11.5px}
+.hx{width:64px;height:72px;margin:0 auto 6px;background:var(--gold);color:#3a2a00;display:grid;place-items:center;font-size:26px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.bd.lock{opacity:.65}
+.bd.lock .hx{background:var(--soft);color:var(--mut)}
+.add{display:flex;gap:8px;flex-wrap:wrap}
+.add input{flex:1;min-width:200px;font:inherit;font-size:14px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+.add button{font:inherit;font-size:14px;border:0;border-radius:8px;padding:7px 14px;background:var(--ink);color:var(--bg);cursor:pointer}
+
+#cap{padding:8px 18px 0}
+.capbar{display:flex;gap:8px}
+.capbar input{flex:1;min-width:0;font:inherit;font-size:16px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 14px}
+.capbar input:focus{outline:2px solid var(--s1);outline-offset:1px}
+.capbar button{font:inherit;font-weight:600;border:0;border-radius:12px;padding:0 18px;background:var(--s1);color:#fff;cursor:pointer}
+#inbox{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
+#inbox li{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:var(--panel);border-radius:10px;padding:7px 10px;font-size:14px}
+#inbox li span{flex:1;min-width:140px}
+#inbox select,#inbox button{font:inherit;font-size:13px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:5px 8px;cursor:pointer}
+#next{padding:0 18px 18px}
+#next h2{margin:0;font-size:18px}
+.nx{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.nx button{width:100%;text-align:left;font:inherit;background:var(--panel);border:0;border-radius:12px;padding:10px 12px;cursor:pointer;color:var(--ink);display:block}
+.nx i{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:7px}
+.nx b{font-size:14px}
+.nx span{display:block;font-size:13px;margin-top:2px}
+.nx span.e{color:var(--mut);font-style:italic}
+</style>
+</head>
+<body>
+<header>
+<h1>Matheus OS</h1>
+<p>Esboço do mapa-mãe com dados de exemplo. Toque em uma área ou projeto para abrir o motor de perguntas.</p>
+</header>
+<div id="cap"><div class="capbar"><input id="ci" placeholder="O que está na sua cabeça agora? Jogue aqui." maxlength="80" aria-label="Captura rápida"><button id="cb">Capturar</button></div><ul id="inbox"></ul></div>
+<main>
+<section id="map" aria-label="Mapa-mãe"></section>
+<section id="panel" aria-live="polite"></section>
+</main>
+<section id="next" aria-label="Próximos passos"></section>
+<section id="mural" aria-label="Mural de conquistas"></section>
+<script>
+var ST=['Capturar','Entender','Mapear','Decidir','Agir','Medir e aprender'];
+var Q=[['Capturar',['O que trouxe isso à minha atenção?','Isso importa agora ou pode esperar?']],
+['Entender',['Qual é o problema real?','O que eu quero conseguir?']],
+['Mapear',['O que eu controlo?','O que eu não controlo?','Que dependências existem?']],
+['Decidir',['Quais opções existem?','É reversível? Qual o custo se der errado?']],
+['Agir',['Qual é o menor próximo passo útil?']],
+['Medir e aprender',['Como saberei que funcionou?','O que eu supunha errado?','O que muda daqui pra frente?']]];
+var FAST={'O que trouxe isso à minha atenção?':1,'O que eu quero conseguir?':1,'O que eu controlo?':1,'Qual é o menor próximo passo útil?':1,'Como saberei que funcionou?':1};
+var AREAS=[['Trabalho',[]],['Negócios',[['Opportunity Score',2],['Landing unhas',4]]],['Estudos',[['Tutor de inglês',4]]],['Pessoal',[['Matheus OS',1],['Remix “Let Go”',5]]],['Finanças',[]],['Relações',[]],['Saúde',[]]];
+var EXTRA=[['Landing unhas','Opportunity Score'],['Tutor de inglês','Matheus OS']];
+var CX=400,CY=300,N=[],L=[],by={},sel='Matheus OS',mode='fast',store={};
+try{store=JSON.parse(localStorage.getItem('mos')||'{}')}catch(e){store={}}
+function alive(id){return !(store[id]&&store[id].done)}
+function save(){try{localStorage.setItem('mos',JSON.stringify(store))}catch(e){}}
+function pol(a,r){return[CX+r*Math.cos(a),CY+r*Math.sin(a)]}
+function build(){N=[];L=[];by={};var AR=AREAS.map(function(A){return[A[0],A[1].concat((store.custom||[]).filter(function(c){return c[1]==A[0]}).map(function(c){return[c[0],0]}))]});
+AR.forEach(function(A,i){
+ var a=-Math.PI/2+i*2*Math.PI/AREAS.length,p=pol(a,135);
+ var n={id:A[0],k:'a',x:p[0],y:p[1],empty:!A[1].length};N.push(n);by[n.id]=n;L.push(['core',n.id]);
+ A[1].forEach(function(P,j){
+  var q=pol(a+(j-(A[1].length-1)/2)*.36,250);
+  var m={id:P[0],k:'p',x:q[0],y:q[1],st:P[1]};N.push(m);by[m.id]=m;L.push([n.id,m.id]);
+ });
+});
+by.core={x:CX,y:CY}}
+build();
+function stOf(id){return store[id]&&store[id].st!=null?store[id].st:by[id].st}
+function draw(){
+ var s='<svg viewBox="0 0 800 600" role="img" aria-label="Mapa de áreas e projetos">';
+ L.forEach(function(l){if(!alive(l[0])||!alive(l[1]))return;var a=by[l[0]],b=by[l[1]],h=(l[0]==sel||l[1]==sel)?' hot':'';
+  s+='<line class="lk'+h+'" x1="'+a.x+'" y1="'+a.y+'" x2="'+b.x+'" y2="'+b.y+'"/>'});
+ EXTRA.forEach(function(l){if(!alive(l[0])||!alive(l[1]))return;var a=by[l[0]],b=by[l[1]],h=(l[0]==sel||l[1]==sel)?' hot':'';
+  s+='<line class="lk x'+h+'" x1="'+a.x+'" y1="'+a.y+'" x2="'+b.x+'" y2="'+b.y+'"/>'});
+ s+='<g class="core"><circle cx="'+CX+'" cy="'+CY+'" r="40"/><text x="'+CX+'" y="'+(CY+4)+'" text-anchor="middle">Mapa-mãe</text></g>';
+ N.forEach(function(n){if(!alive(n.id))return;
+  var c=n.k=='a'?'n a'+(n.empty?' empty':''):'n p',r=n.k=='a'?36:30;
+  if(n.id==sel)c+=' sel';
+  s+='<g class="'+c+'" tabindex="0" role="button" data-id="'+n.id+'" aria-label="'+n.id+'">';
+  if(n.k=='p')s+='<circle class="b" cx="'+n.x+'" cy="'+n.y+'" r="'+r+'" style="fill:var(--s'+stOf(n.id)+')"/>';
+  else s+='<circle cx="'+n.x+'" cy="'+n.y+'" r="'+r+'"/>';
+  s+='<circle class="r" cx="'+n.x+'" cy="'+n.y+'" r="'+(r+5)+'"/>';
+  var ty=n.k=='p'?n.y+r+17:n.y+4;
+  s+='<text x="'+n.x+'" y="'+ty+'" style="'+(n.k=='p'?'':'')+'">'+n.id+'</text></g>';
+ });
+ document.getElementById('map').innerHTML=s+'</svg>';
+}
+function panel(){
+ var n=by[sel],p=n.k=='p',h='<h2>'+sel+'</h2>';
+ h+='<p class="sub">'+(p?'Projeto':'Área')+'</p>';
+ if(p){h+='<div class="rib">';ST.forEach(function(t,i){
+  h+='<button data-st="'+i+'" class="'+(stOf(sel)==i?'on':'')+'" style="'+(stOf(sel)==i?'background:var(--s'+i+')':'')+'">'+t+'</button>'});h+='</div><div class="loop"></div><p class="lc">o que aprendi volta para a próxima decisão</p>';
+  if(stOf(sel)==5)h+='<div class="close"><b>Fechar o ciclo</b><button data-x="u">Ajustar e entender de novo</button><button data-x="d">Ajustar e decidir de novo</button><button class="k" data-x="k">Concluir e levar ao mural</button></div>'}
+ h+='<div class="seg"><button data-m="fast" class="'+(mode=='fast'?'on':'')+'">Modo rápido</button><button data-m="deep" class="'+(mode=='deep'?'on':'')+'">Modo profundo</button></div>';
+ Q.forEach(function(g,gi){
+  var qs=g[1].filter(function(q){return mode=='deep'||FAST[q]});
+  if(!qs.length)return;
+  h+='<div class="grp"><h3><i style="background:var(--s'+gi+')"></i>'+g[0]+'</h3>';
+  qs.forEach(function(q){var v=(store[sel]&&store[sel].a&&store[sel].a[q])||'';
+   h+='<label><span>'+q+'</span><textarea data-q="'+q+'">'+v.replace(/</g,'&lt;')+'</textarea></label>'});
+  h+='</div>'});
+ h+='<p class="hint">Linhas tracejadas ligam projetos que se relacionam. A cor do círculo mostra em que etapa o projeto está.</p>';
+ document.getElementById('panel').innerHTML=h;
+}
+function pick(id){sel=id;draw();panel();if(window.innerWidth<=820)document.getElementById('panel').scrollIntoView({behavior:'smooth',block:'start'})}
+document.getElementById('map').addEventListener('click',function(e){var g=e.target.closest('.n');if(g)pick(g.dataset.id)});
+document.getElementById('map').addEventListener('keydown',function(e){if(e.key=='Enter'||e.key==' '){var g=e.target.closest('.n');if(g){e.preventDefault();pick(g.dataset.id)}}});
+document.getElementById('panel').addEventListener('click',function(e){
+ var b=e.target.closest('button');if(!b)return;
+ if(b.dataset.m){mode=b.dataset.m;panel()}
+ if(b.dataset.x){var x=b.dataset.x;store[sel]=store[sel]||{};
+  if(x=='u')store[sel].st=1;else if(x=='d')store[sel].st=3;
+  else{store[sel].done=true;var ar=L.filter(function(l){return l[1]==sel})[0];store.mural=(store.mural||[]).concat([{t:sel,a:ar[0],d:today()}]);sel=ar[0]}
+  save();draw();panel();mural();steps()}
+ if(b.dataset.st!=null){store[sel]=store[sel]||{};store[sel].st=+b.dataset.st;save();draw();panel()}
+});
+document.getElementById('panel').addEventListener('input',function(e){
+ var t=e.target;if(!t.dataset.q)return;
+ store[sel]=store[sel]||{};store[sel].a=store[sel].a||{};store[sel].a[t.dataset.q]=t.value;save();if(t.dataset.q==NEXTQ)steps();
+});
+function today(){return new Date().toLocaleDateString('pt-BR')}
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function mural(){
+ var ms=[{t:'Primeiro protótipo do Matheus OS',a:'Pessoal',d:'30/09/2026'}].concat(store.mural||[]);
+ var h='<h2>Mural de conquistas</h2><p class="sub">Tudo o que você conclui, ou já fez antes, fica aqui.</p><div class="wall">';
+ ms.forEach(function(m){h+='<div class="bd"><div class="hx">★</div><b>'+esc(m.t)+'</b><span>'+esc(m.a?m.a+', '+m.d:m.d)+'</span></div>'});
+ for(var i=0;i<3;i++)h+='<div class="bd lock"><div class="hx">?</div><b>por conquistar</b></div>';
+ h+='</div><div class="add"><input id="nw" placeholder="Algo que você já fez" maxlength="60"><button id="na">Adicionar ao mural</button></div>';
+ document.getElementById('mural').innerHTML=h;
+}
+document.getElementById('mural').addEventListener('click',function(e){
+ if(e.target.id!='na')return;var i=document.getElementById('nw'),v=i.value.trim();if(!v)return;
+ store.mural=(store.mural||[]).concat([{t:v,a:'',d:today()}]);save();mural();
+});
+var NEXTQ='Qual é o menor próximo passo útil?';
+function steps(){
+ var h='<h2>Próximos passos</h2><p class="sub">O menor passo útil de cada projeto ativo. Toque para abrir.</p><ul class="nx">';
+ N.forEach(function(n){if(n.k!='p'||!alive(n.id))return;var v=(store[n.id]&&store[n.id].a&&store[n.id].a[NEXTQ])||'';
+  h+='<li><button data-p="'+n.id+'"><i style="background:var(--s'+stOf(n.id)+')"></i><b>'+n.id+'</b><span'+(v?'':' class="e"')+'>'+(v?esc(v):'defina o próximo passo')+'</span></button></li>'});
+ document.getElementById('next').innerHTML=h+'</ul>';
+}
+document.getElementById('next').addEventListener('click',function(e){var b=e.target.closest('button');if(b)pick(b.dataset.p)});
+function inbox(){
+ var ar=AREAS.map(function(A){return'<option>'+A[0]+'</option>'}).join(''),h='';
+ (store.inbox||[]).forEach(function(t,i){h+='<li><span>'+esc(t)+'</span><select data-i="'+i+'" aria-label="Área"><option value="">Área…</option>'+ar+'</select><button data-c="'+i+'">Virar projeto</button><button data-r="'+i+'" aria-label="Descartar">×</button></li>'});
+ document.getElementById('inbox').innerHTML=h;
+}
+function cap(){var i=document.getElementById('ci'),v=i.value.trim();if(!v)return;store.inbox=(store.inbox||[]).concat([v]);i.value='';save();inbox();i.focus()}
+document.getElementById('cb').addEventListener('click',cap);
+document.getElementById('ci').addEventListener('keydown',function(e){if(e.key=='Enter')cap()});
+document.getElementById('inbox').addEventListener('click',function(e){
+ var b=e.target.closest('button');if(!b)return;var q=store.inbox||[];
+ if(b.dataset.r!=null){q.splice(+b.dataset.r,1);store.inbox=q;save();inbox()}
+ else if(b.dataset.c!=null){
+  var i=+b.dataset.c,sl=document.querySelector('#inbox select[data-i="'+i+'"]');if(!sl.value){sl.focus();return}
+  var id=q[i].replace(/["'<>&“”]/g,'').trim().slice(0,24)||'Novo projeto';
+  store.custom=(store.custom||[]).concat([[id,sl.value]]);q.splice(i,1);store.inbox=q;save();
+  build();sel=id;draw();panel();steps();inbox();
+ }
+});
+draw();panel();mural();steps();inbox();
+</script>
+</body>
+</html>

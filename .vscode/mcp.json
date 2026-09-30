@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "matheus-os-mcp": {
+      "type": "stdio",
+      "command": "npm",
+      "args": ["--prefix", "mcp", "run", "dev"]
+    }
+  }
+}

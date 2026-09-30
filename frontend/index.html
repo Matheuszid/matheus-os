@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Matheus OS – protótipo do mapa</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Matheus OS</h1>
+      <p>Esboço do mapa-mãe com dados de exemplo. Toque em uma área ou projeto para abrir o motor de perguntas.</p>
+      <div id="authUser" class="auth-user"></div>
+    </header>
+
+    <div id="authGate" class="auth-gate">
+      <div class="auth-card">
+        <h2>Matheus OS</h2>
+        <p>Entre para sincronizar seus dados entre dispositivos.</p>
+        <button id="googleLoginBtn">Entrar com Google</button>
+      </div>
+    </div>
+
+    <div id="migrationGate" class="auth-gate hidden">
+      <div class="auth-card">
+        <h2>Dados antigos encontrados</h2>
+        <p>Encontramos dados antigos deste navegador.</p>
+        <button id="migrationImportBtn" type="button">Importar para minha conta</button>
+        <button id="migrationIgnoreBtn" class="secondary" type="button">Ignorar</button>
+      </div>
+    </div>
+
+    <div id="cap">
+      <div class="capbar">
+        <input id="ci" placeholder="O que está na sua cabeça agora? Jogue aqui." maxlength="80" aria-label="Captura rápida" />
+        <button id="cb">Capturar</button>
+      </div>
+      <ul id="inbox"></ul>
+    </div>
+
+    <main>
+      <section id="map" aria-label="Mapa-mãe"></section>
+      <section id="panel" aria-live="polite"></section>
+    </main>
+
+    <section id="next" aria-label="Próximos passos"></section>
+    <section id="mural" aria-label="Mural de conquistas"></section>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

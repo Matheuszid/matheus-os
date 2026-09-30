@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.firebase/
+.env
+.env.*
+!.env.example
+matheus-os-fdd16-firebase-adminsdk-fbsvc-e0d41c2c07.json
+.DS_Store
